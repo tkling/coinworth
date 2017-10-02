@@ -9,9 +9,8 @@ block content
     p Exchange rate: $#{account.exchange_rate}
     p Amount spent in USD: #{account.usd_spent}
     p Worth in USD: #{account.usd_value}
-    p Coin count (computed): #{account.coin_amount}
-    p Coin count (listed): #{account.listed_coin_count}
-    p Percentage: #{account.usd_value / account.usd_spent * 100} 
+    p Coin count: #{account.listed_coin_count}
+    p Percentage: #{(account.usd_value / account.usd_spent * 100).toFixed(2)} 
   else
     p LOL nothing?
       
