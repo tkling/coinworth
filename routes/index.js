@@ -27,21 +27,21 @@ router.get('/', function(req, res, next) {
 
       client.getExchangeRates({'currency': acct_info.currency}, (err, rates) => {
         acct_info.exchange_rate = rates.data.rates.USD;
-      });
+        
+        acct.getTransactions(null, (err, txns) => {
+          txns.forEach((txn) => {
+            acct_info.transaction_count += 1;
+            acct_info.coin_amount += parseFloat(txn.amount.amount);
+            acct_info.usd_spent += parseFloat(txn.native_amount.amount);
+            
+            if (txns.length == acct_info.transaction_count) {
+              infos.push(acct_info);
+            }
 
-      acct.getTransactions(null, (err, txns) => {
-        txns.forEach((txn) => {
-          acct_info.transaction_count += 1;
-          acct_info.coin_amount += parseFloat(txn.amount.amount);
-          acct_info.usd_spent += parseFloat(txn.native_amount.amount);
-          
-          if (txns.length == acct_info.transaction_count) {
-            infos.push(acct_info);
-          }
-
-          if (accounts.length == infos.length) { 
-            res.render('index', { title: 'Coinworth', infos: infos }); 
-          }
+            if (accounts.length == infos.length) { 
+              res.render('index', { title: 'Coinworth', infos: infos }); 
+            }
+          });
         });
       });
     });
