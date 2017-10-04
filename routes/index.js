@@ -3,7 +3,6 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
   var Client = require('coinbase').Client;
 
@@ -16,14 +15,7 @@ router.get('/', function(req, res, next) {
     var infos = [];
 
     accounts.forEach((acct) => {
-      var acct_info = {};
-      acct_info.currency = acct.balance.currency;
-      acct_info.exchange_rate = null;
-      acct_info.listed_coin_count = acct.balance.amount;
-      acct_info.usd_spent = 0.0;
-      acct_info.coin_amount = 0.0;
-      acct_info.transaction_count = 0;
-      acct_info.usd_value = acct.native_balance.amount;
+      var acct_info = initializedAccountViewObj(acct);
 
       client.getExchangeRates({'currency': acct_info.currency}, (err, rates) => {
         acct_info.exchange_rate = rates.data.rates.USD;
@@ -39,7 +31,7 @@ router.get('/', function(req, res, next) {
             }
 
             if (accounts.length == infos.length) { 
-              res.render('index', { title: 'Coinworth', infos: infos }); 
+              res.render('index', { title: 'Coinworth', infos: sortAccounts(infos) });
             }
           });
         });
@@ -47,5 +39,25 @@ router.get('/', function(req, res, next) {
     });
   });
 });
+
+function initializedAccountViewObj(coinbaseAcct) {
+  return {
+    'currency': coinbaseAcct.balance.currency,
+    'listed_coin_count': coinbaseAcct.balance.amount,
+    'usd_value': coinbaseAcct.native_balance.amount,
+    'exchange_rate': null,
+    'usd_spent': 0.0,
+    'coin_amount': 0.0,
+    'transaction_count': 0
+  };
+}
+
+function sortAccounts(accounts) {
+  return accounts.sort((a, b) => {
+    if (a.currency > b.currency) { return 1; }
+    if (a.currency < b.currency) { return -1; }
+    return 0;
+  });
+}
 
 module.exports = router;
