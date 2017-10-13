@@ -1,17 +1,24 @@
 extends layout
 
 block content
-  h1= title
-  p How much have you put in, and are you up or down?
+  div(class='row')
+    div(class='small-12 columns')
+      h1= title
+      p How much have you put in, and are you up or down?
 
-  each account in infos
-    h2= account.currency
-    p Exchange rate: $#{account.exchange_rate}
-    p Amount spent in USD: #{account.usd_spent}
-    p Worth in USD: #{account.usd_value}
-    p Coin count: #{account.listed_coin_count}
-    p Percentage: #{(account.usd_value / account.usd_spent * 100).toFixed(2)} 
-  else
-    p LOL nothing?
-      
+  br
 
+  div(class='row')
+    each account in infos
+      div(class='large-4 small-12 columns')
+        h2= account.currency
+        p Exchange rate: $#{account.exchange_rate}
+        p Amount spent in USD: #{account.usd_spent}
+        p Worth in USD: #{account.usd_value}
+        p Coin count: #{account.listed_coin_count}
+        p ROI:&nbsp;
+          span(
+            style= account.percentage > 0 ? 'color:green' : 'color:red'
+          ) #{account.percentage}
+    else
+      p LOL nothing?
