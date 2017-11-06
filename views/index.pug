@@ -8,17 +8,15 @@ block content
 
   br
 
-  div(class='row')
+  .row
     each account in infos
       div(class='large-4 small-12 columns')
         h2= account.currency
         p Exchange rate: $#{account.exchange_rate}
-        p Amount spent in USD: #{account.usd_spent}
-        p Worth in USD: #{account.usd_value}
+        p Amount spent in USD: $#{account.usd_spent}
+        p Worth in USD: $#{account.usd_value}
         p Coin count: #{account.listed_coin_count}
         p ROI:&nbsp;
-          span(
-            style= account.percentage > 0 ? 'color:green' : 'color:red'
-          ) #{account.percentage}
+          span(style= account.percentage > 0 ? 'color:green' : 'color:red') #{account.percentage}
     else
       p LOL nothing?
