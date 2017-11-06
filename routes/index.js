@@ -28,6 +28,8 @@ router.get('/', function(req, res, next) {
 
             if (txns.length == acct_info.transaction_count) {
               acct_info.percentage = (acct_info.usd_value / acct_info.usd_spent * 100 - 100).toFixed(2);
+              acct_info.usd_spent = acct_info.usd_spent.toFixed(2);
+              acct_info.usd_value = parseFloat(acct_info.usd_value).toFixed(2);
               infos.push(acct_info);
             }
 
