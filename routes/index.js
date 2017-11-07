@@ -1,5 +1,6 @@
 'use strict';
 
+var datetime = require('node-datetime');
 var express = require('express');
 var router = express.Router();
 
@@ -34,7 +35,7 @@ router.get('/', function(req, res, next) {
             }
 
             if (accounts.length == infos.length) {
-              res.render('index', { title: 'Coinworth', infos: sortAccounts(infos) });
+              res.render('index', { title: 'Coinworth', time: datetime.create(Date.now()).format('m/d/y I:M p'), infos: sortAccounts(infos) });
             }
           });
         });
