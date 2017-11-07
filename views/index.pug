@@ -16,6 +16,7 @@ block content
         p Amount spent in USD: $#{account.usd_spent}
         p Worth in USD: $#{account.usd_value}
         p Coin count: #{account.listed_coin_count}
+        p m#{account.currency}: #{parseFloat(account.listed_coin_count) * 1000}
         p ROI:&nbsp;
           span(style= account.percentage > 0 ? 'color:green' : 'color:red') #{account.percentage}
     else
