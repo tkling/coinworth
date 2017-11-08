@@ -6,6 +6,7 @@ var router = express.Router();
 
 router.get('/', function(req, res, next) {
   var Client = require('coinbase').Client;
+  var titleString = '';
 
   var client = new Client({
     'apiKey': process.env.cb_key,
@@ -15,7 +16,8 @@ router.get('/', function(req, res, next) {
   client.getAccounts({}, function(err, accounts) {
     var infos = [];
 
-    accounts.forEach((acct) => {
+    var nonUSDAccounts = accounts.filter((acct) => { return acct.balance.currency !== 'USD';});
+    nonUSDAccounts.forEach((acct) => {
       var acct_info = initAccountViewObject(acct);
 
       client.getExchangeRates({'currency': acct_info.currency}, (err, rates) => {
@@ -32,10 +34,19 @@ router.get('/', function(req, res, next) {
               acct_info.usd_spent = acct_info.usd_spent.toFixed(2);
               acct_info.usd_value = parseFloat(acct_info.usd_value).toFixed(2);
               infos.push(acct_info);
+
+              if (acct_info.currency === 'BTC') {
+                titleString = parseFloat(acct_info.usd_value).toFixed(0).toString()
+                  + '@$' + parseFloat(acct_info.exchange_rate).toFixed(0).toString();
+              }
             }
 
-            if (accounts.length == infos.length) {
-              res.render('index', { title: 'Coinworth', time: datetime.create(Date.now()).format('m/d/y I:M p'), infos: sortAccounts(infos) });
+            if (nonUSDAccounts.length == infos.length) {
+              res.render('index', {
+                title: 'BTC: $' + titleString,
+                time: datetime.create(Date.now()).format('m/d/y I:M p'),
+                infos: sortAccounts(infos)
+              });
             }
           });
         });
