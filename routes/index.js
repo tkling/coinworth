@@ -36,14 +36,14 @@ router.get('/', function(req, res, next) {
               infos.push(acct_info);
 
               if (acct_info.currency === 'BTC') {
-                titleString = parseFloat(acct_info.usd_value).toFixed(0).toString()
+                titleString = '$' + parseFloat(acct_info.usd_value).toFixed(0).toString()
                   + '@$' + parseFloat(acct_info.exchange_rate).toFixed(0).toString();
               }
             }
 
             if (nonUSDAccounts.length == infos.length) {
               res.render('index', {
-                title: 'BTC: $' + titleString,
+                title: titleString,
                 time: datetime.create(Date.now()).format('m/d/y I:M p'),
                 infos: sortAccounts(infos)
               });
