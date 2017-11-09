@@ -13,6 +13,9 @@ block content
     each account in infos
       .large-4.small-12.columns
         h2= account.currency
+        p
+          - var gdaxUrlEnding = `${account.currency}-USD`
+          a(href= `https://www.gdax.com/trade/${gdaxUrlEnding}`)= `${gdaxUrlEnding} on GDAX`
         p Exchange rate: $#{account.exchange_rate}
         p Amount spent in USD: $#{account.usd_spent}
         p Worth in USD: $#{account.usd_value}
