@@ -20,6 +20,21 @@ logger.token('status', (req, res) => { return res.statusCode.toString().cyan })
 logger.token('method', (req, res) => { return req.method.toString().red })
 logger.token('url', (req, res) => { return req.url.toString().blue })
 
+// taken from morgan source @b29fc88 https://github.com/expressjs/morgan/blob/master/index.js
+logger.token('response-time', function getResponseTimeToken (req, res, digits) {
+  if (!req._startAt || !res._startAt) {
+    // missing request and/or response start time
+    return
+  }
+
+  // calculate diff
+  var ms = (res._startAt[0] - req._startAt[0]) * 1e3 +
+    (res._startAt[1] - req._startAt[1]) * 1e-6
+
+  // return truncated value
+  return ms.toFixed(digits === undefined ? 3 : digits).toString().magenta
+})
+
 app.use(logger((tokens, req, res) => {
   return [
     tokens['time'](req, res),
