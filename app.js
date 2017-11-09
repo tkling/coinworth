@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var colors = require('colors');
 
 var app = express();
 
@@ -14,8 +15,21 @@ app.set('view engine', 'pug');
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
-logger.token('time', (req) => { return new Date().toTimeString(); })
-app.use(logger(':time | :method :url :status :response-time ms - :res[content-length]'));
+logger.token('time', (req) => { return new Date().toTimeString().green; })
+logger.token('status', (req, res) => { return res.statusCode.toString().cyan })
+logger.token('method', (req, res) => { return req.method.toString().red })
+logger.token('url', (req, res) => { return req.url.toString().blue })
+app.use(logger((tokens, req, res) => {
+  return [
+    tokens['time'](req, res),
+    tokens['method'](req, res),
+    tokens['url'](req, res),
+    tokens['status'](req, res),
+    tokens['response-time'](req, res), 'ms'.magenta, '-',
+    tokens.res(req, res, 'content-length')
+  ].join(' ')
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
