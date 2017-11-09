@@ -19,6 +19,7 @@ logger.token('time', (req) => { return new Date().toTimeString().green; })
 logger.token('status', (req, res) => { return res.statusCode.toString().cyan })
 logger.token('method', (req, res) => { return req.method.toString().red })
 logger.token('url', (req, res) => { return req.url.toString().blue })
+
 app.use(logger((tokens, req, res) => {
   return [
     tokens['time'](req, res),
