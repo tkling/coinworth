@@ -16,13 +16,13 @@ router.get('/', function(req, res, next) {
   client.getAccounts({}, function(err, accounts) {
     var infos = [];
 
-    var nonUSDAccounts = accounts.filter((acct) => { return acct.balance.currency !== 'USD';});
+    var nonUSDAccounts = (accounts || []).filter((acct) => { return acct.balance.currency !== 'USD'; });
     nonUSDAccounts.forEach((acct) => {
       var acct_info = initAccountViewObject(acct);
 
       client.getExchangeRates({'currency': acct_info.currency}, (err, rates) => {
         acct.getTransactions(null, (err, txns) => {
-          acct_info.exchange_rate = rates.data.rates.USD;
+          acct_info.exchange_rate = rates === null ? 0 : rates.data.rates.USD;
 
           if (txns === null) txns = [];
 
