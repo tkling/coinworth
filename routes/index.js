@@ -24,6 +24,8 @@ router.get('/', function(req, res, next) {
         acct.getTransactions(null, (err, txns) => {
           acct_info.exchange_rate = rates.data.rates.USD;
 
+          if (txns === null) txns = [];
+
           txns.forEach((txn) => {
             acct_info.transaction_count += 1;
             acct_info.coin_amount += parseFloat(txn.amount.amount);
