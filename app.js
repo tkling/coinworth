@@ -15,7 +15,7 @@ app.set('view engine', 'pug');
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 logger.token('time', (req) => { return new Date().toTimeString(); })
-app.use(logger(':time :method :url :status :response-time ms - :res[content-length]'));
+app.use(logger(':time | :method :url :status :response-time ms - :res[content-length]'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
