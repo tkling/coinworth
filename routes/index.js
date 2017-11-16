@@ -1,8 +1,8 @@
 'use strict';
 
-var datetime = require('node-datetime');
 var express = require('express');
 var router = express.Router();
+var datetime = require('node-datetime');
 
 router.get('/', function(req, res, next) {
   var Client = require('coinbase').Client;

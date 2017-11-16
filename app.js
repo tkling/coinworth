@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var colors = require('colors');
 var timeout = require('connect-timeout');
+var datetime = require('node-datetime');
 
 var app = express();
 
@@ -14,7 +15,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // setup custom logger stuff
-logger.token('time', (req) => { return new Date().toTimeString().green; })
+logger.token('time', (req) => { return new Date().toTimeString().replace(/ \w{3}-\d{4} /, ' ').green; })
 logger.token('status', (req, res) => { return res.statusCode.toString().cyan })
 logger.token('method', (req, res) => { return req.method.toString().red })
 logger.token('url', (req, res) => { return req.url.toString().blue })
@@ -52,6 +53,7 @@ app.use(haltOnTimedout)
 
 var index = require('./routes/index');
 app.use('/', index);
+app.use(haltOnTimedout)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -68,12 +70,21 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+
+  if (req.timedout) {
+    res.render('timeout', {
+      title: 'Coinworth - time out :(',
+      time: datetime.create(Date.now()).format('m/d/y I:M p')
+    });
+  } else {
+    res.render('error');
+  }
 });
 
 function haltOnTimedout (req, res, next) {
-  if (!req.timedout) next()
-  else console.log('timed out!'.red)
+  if (!req.timedout) {
+    next()
+  }
 }
 
 module.exports = app;
